@@ -10,7 +10,6 @@ import (
 const (
 	godev       = "https://go.dev"
 	practicalgo = "https://www.practical-go-lessons.com"
-	gosearch    = "gosearch"
 )
 
 var s = flag.String("s", "", "search argument")
