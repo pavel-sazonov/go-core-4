@@ -11,9 +11,9 @@ const (
 )
 
 func main() {
-	res := scanner.Result([]string{godev, practicalgo})
-	for k, v := range res {
-		fmt.Println(k, v)
+	urls := scanner.URLs([]string{godev, practicalgo})
+	for i, u := range urls {
+		fmt.Println(i, ":", u)
 	}
 
 }

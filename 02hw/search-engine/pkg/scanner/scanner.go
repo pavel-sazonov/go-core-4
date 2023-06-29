@@ -4,20 +4,21 @@ import (
 	"go-core-4/02hw/search-engine/pkg/crawler/spider"
 )
 
-func Result(urls []string) map[string][]string {
-	m := make(map[string][]string)
+// возвращает найденные на страницах ссылки
+func URLs(urls []string) []string {
+	data := make([]string, 0)
 
 	for _, url := range urls {
 		urls, err := scan(url)
 		if err != nil {
-			m[url] = make([]string, 0)
 			continue
 		}
-		m[url] = urls
+		data = append(data, urls...)
 	}
-	return m
+	return data
 }
 
+// возвращает найденные на странице ссылки
 func scan(url string) (urls []string, err error) {
 	s := spider.New()
 	res := make([]string, 0)
