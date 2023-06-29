@@ -16,17 +16,15 @@ const (
 var s = flag.String("s", "", "search argument")
 
 func main() {
+	flag.Parse()
 	urls := scanner.URLs([]string{godev, practicalgo})
-	for i, u := range urls {
-		fmt.Println(i, ":", u)
-	}
 
-	for _, s := range search(*s, urls) {
-		fmt.Println(s)
+	for _, v := range search(*s, urls) {
+		fmt.Println(v)
 	}
-
 }
 
+// ищет строку в слайсе урлов
 func search(s string, urls []string) []string {
 	res := make([]string, 0)
 
