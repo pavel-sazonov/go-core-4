@@ -1,9 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go-core-4/02hw/search-engine/pkg/scanner"
-	"os"
 	"strings"
 )
 
@@ -13,45 +13,26 @@ const (
 	gosearch    = "gosearch"
 )
 
-func main() {
-	c, err := commands(os.Args[1:])
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+var s = flag.String("s", "", "search argument")
 
+func main() {
 	urls := scanner.URLs([]string{godev, practicalgo})
 	for i, u := range urls {
 		fmt.Println(i, ":", u)
 	}
 
-	for _, s := range search(c, urls) {
+	for _, s := range search(*s, urls) {
 		fmt.Println(s)
 	}
 
 }
 
-func commands(s []string) ([]string, error) {
-	if s[0] != gosearch {
-		return nil, fmt.Errorf("команда не найдена")
-	}
-
+func search(s string, urls []string) []string {
 	res := make([]string, 0)
 
-	for _, c := range s[2:] {
-		res = append(res, c)
-	}
-	return res, nil
-}
-
-func search(s []string, urls []string) []string {
-	res := make([]string, 0)
-
-	for _, c := range s {
-		for _, url := range urls {
-			if strings.Contains(url, c) {
-				res = append(res, url)
-			}
+	for _, url := range urls {
+		if strings.Contains(url, s) {
+			res = append(res, url)
 		}
 	}
 
