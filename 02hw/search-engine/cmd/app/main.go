@@ -25,7 +25,7 @@ func main() {
 
 // ищет строку в слайсе урлов
 func search(s string, urls []string) []string {
-	res := make([]string, 0)
+	var res []string
 
 	for _, url := range urls {
 		if strings.Contains(url, s) {

@@ -6,7 +6,7 @@ import (
 
 // возвращает найденные на страницах ссылки
 func URLs(urls []string) []string {
-	data := make([]string, 0)
+	var data []string
 
 	for _, url := range urls {
 		urls, err := scan(url)
@@ -21,7 +21,7 @@ func URLs(urls []string) []string {
 // возвращает найденные на странице ссылки
 func scan(url string) (urls []string, err error) {
 	s := spider.New()
-	res := make([]string, 0)
+	var res []string
 	docs, err := s.Scan(url, 2)
 	if err != nil {
 		return nil, err
