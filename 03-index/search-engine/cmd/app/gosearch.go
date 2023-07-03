@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-core-4/02hw/search-engine/pkg/crawler/spider"
+	"go-core-4/03-index/search-engine/pkg/crawler/spider"
 	"strings"
 )
 
