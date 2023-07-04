@@ -17,7 +17,23 @@ var s = flag.String("s", "", "search argument")
 
 func main() {
 	flag.Parse()
-	documents := scanResult([]string{godev, practicalgo})
+	urls := []string{godev, practicalgo}
+	var documents []index.Document
+
+	for _, url := range urls {
+		docs, err := scan(url)
+		if err != nil {
+			continue
+		}
+		if len(documents) == 0 {
+			documents = append(documents, docs...)
+			continue
+		}
+		for _, doc := range docs {
+			doc.ID += len(documents)
+			documents = append(documents, doc)
+		}
+	}
 
 	sort.SliceStable(documents, func(i, j int) bool {
 		return documents[i].ID < documents[j].ID
@@ -33,17 +49,6 @@ func main() {
 			fmt.Println(documents[i])
 		}
 	}
-}
-
-func scanResult(urls []string) (documents []index.Document) {
-	for _, url := range urls {
-		docs, err := scan(url)
-		if err != nil {
-			continue
-		}
-		documents = append(documents, docs...)
-	}
-	return documents
 }
 
 func scan(url string) (documents []index.Document, err error) {
