@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-core-4/03-index/search-engine/pkg/crawler/spider"
 	"go-core-4/03-index/search-engine/pkg/index"
+	"sort"
 	"strings"
 )
 
@@ -18,6 +19,11 @@ var s = flag.String("s", "", "search argument")
 func main() {
 	flag.Parse()
 	documents := scanResult([]string{godev, practicalgo})
+
+	sort.SliceStable(documents, func(i, j int) bool {
+		return documents[i].ID < documents[j].ID
+	})
+
 	index := index.Make(documents)
 
 	for _, v := range search(*s, documents) {
