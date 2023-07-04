@@ -14,7 +14,9 @@ type Document struct {
 	Title string
 }
 
-func Make(documents []Document) (index Index) {
+func Make(documents []Document) Index {
+	var index = make(map[string][]int)
+
 	for _, doc := range documents {
 		words := strings.Split(doc.Title, " ")
 		for _, word := range words {

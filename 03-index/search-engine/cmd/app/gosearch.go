@@ -6,7 +6,6 @@ import (
 	"go-core-4/03-index/search-engine/pkg/crawler/spider"
 	"go-core-4/03-index/search-engine/pkg/index"
 	"sort"
-	"strings"
 )
 
 const (
@@ -26,20 +25,14 @@ func main() {
 
 	index := index.Make(documents)
 
-	for _, v := range search(*s, documents) {
-		fmt.Println(v)
-	}
-}
-
-// поиск строки в слайсе Document
-func search(s string, documents []index.Document) (result []string) {
-	for _, doc := range documents {
-		if strings.Contains(doc.URL, s) {
-			result = append(result, doc.URL)
+	for _, id := range index[*s] {
+		i := sort.Search(len(documents), func(i int) bool {
+			return documents[i].ID >= id
+		})
+		if i < len(documents) && documents[i].ID == id {
+			fmt.Println(documents[i])
 		}
 	}
-
-	return result
 }
 
 func scanResult(urls []string) (documents []index.Document) {
@@ -59,8 +52,8 @@ func scan(url string) (documents []index.Document, err error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, doc := range docs {
-		documents = append(documents, index.Document{ID: doc.ID, URL: doc.URL, Title: doc.Title})
+	for i, doc := range docs {
+		documents = append(documents, index.Document{ID: i, URL: doc.URL, Title: doc.Title})
 	}
 	return documents, nil
 }
