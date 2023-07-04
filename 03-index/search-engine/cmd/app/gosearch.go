@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"go-core-4/03-index/search-engine/pkg/crawler/spider"
+	"go-core-4/03-index/search-engine/pkg/index"
 	"strings"
 )
 
@@ -14,16 +15,10 @@ const (
 
 var s = flag.String("s", "", "search argument")
 
-// Document - документ, веб-страница, полученная поисковым роботом.
-type Document struct {
-	ID    int
-	URL   string
-	Title string
-}
-
 func main() {
 	flag.Parse()
 	documents := scanResult([]string{godev, practicalgo})
+	index := index.Make(documents)
 
 	for _, v := range search(*s, documents) {
 		fmt.Println(v)
@@ -31,7 +26,7 @@ func main() {
 }
 
 // поиск строки в слайсе Document
-func search(s string, documents []Document) (result []string) {
+func search(s string, documents []index.Document) (result []string) {
 	for _, doc := range documents {
 		if strings.Contains(doc.URL, s) {
 			result = append(result, doc.URL)
@@ -41,7 +36,7 @@ func search(s string, documents []Document) (result []string) {
 	return result
 }
 
-func scanResult(urls []string) (documents []Document) {
+func scanResult(urls []string) (documents []index.Document) {
 	for _, url := range urls {
 		docs, err := scan(url)
 		if err != nil {
@@ -52,14 +47,14 @@ func scanResult(urls []string) (documents []Document) {
 	return documents
 }
 
-func scan(url string) (documents []Document, err error) {
+func scan(url string) (documents []index.Document, err error) {
 	s := spider.New()
 	docs, err := s.Scan(url, 2)
 	if err != nil {
 		return nil, err
 	}
 	for _, doc := range docs {
-		documents = append(documents, Document{doc.ID, doc.URL, doc.Title})
+		documents = append(documents, index.Document{ID: doc.ID, URL: doc.URL, Title: doc.Title})
 	}
 	return documents, nil
 }

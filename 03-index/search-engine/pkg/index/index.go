@@ -1,7 +1,25 @@
 package index
 
 import (
-	"go-core-4/03-index/search-engine/pkg/crawler"
+	"strings"
 )
 
-type Index map[string]crawler.Document
+// инветрированный интдекс: ключ - слово из Title, значение - ID
+type Index map[string][]int
+
+// Document - документ, веб-страница, полученная поисковым роботом.
+type Document struct {
+	ID    int
+	URL   string
+	Title string
+}
+
+func Make(documents []Document) (index Index) {
+	for _, doc := range documents {
+		words := strings.Split(doc.Title, " ")
+		for _, word := range words {
+			index[word] = append(index[word], doc.ID)
+		}
+	}
+	return index
+}
