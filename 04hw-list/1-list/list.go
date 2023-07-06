@@ -60,5 +60,22 @@ func (l *List) Pop() *List {
 
 // Reverse разворачивает список.
 func (l *List) Reverse() *List {
-	return nil
+	el := l.root.next
+	if el.next == l.root {
+		return l
+	}
+
+	s := make([]*Elem, 0, 2)
+
+	for el != l.root {
+		s = append(s, el)
+		el = el.next
+	}
+
+	l = New()
+
+	for _, el := range s {
+		l.Push(*el)
+	}
+	return l
 }
