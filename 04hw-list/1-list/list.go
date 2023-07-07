@@ -64,18 +64,29 @@ func (l *List) Reverse() *List {
 	if el.next == l.root {
 		return l
 	}
-
-	s := make([]*Elem, 0, 2)
-
-	for el != l.root {
-		s = append(s, el)
-		el = el.next
-	}
-
-	l = New()
-
-	for _, el := range s {
+	nextEl := el.next
+	for nextEl != l.root {
+		el = nextEl
+		nextEl = nextEl.next
+		el.prev.next = nextEl
+		nextEl.prev = el.prev
 		l.Push(*el)
 	}
 	return l
+
+	// реализация с созданием нового списка
+
+	// s := make([]*Elem, 0, 2)
+
+	// for el != l.root {
+	// 	s = append(s, el)
+	// 	el = el.next
+	// }
+
+	// l = New()
+
+	// for _, el := range s {
+	// 	l.Push(*el)
+	// }
+	// return l
 }
