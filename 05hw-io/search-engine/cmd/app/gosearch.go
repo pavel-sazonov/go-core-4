@@ -25,15 +25,10 @@ func main() {
 		if err != nil {
 			continue
 		}
-		if len(documents) == 0 {
-			documents = append(documents, docs...)
-			continue
-		}
-		for _, doc := range docs {
-			doc.ID += len(documents)
-			documents = append(documents, doc)
-		}
+		documents = append(documents, docs...)
 	}
+
+	documents = addID(documents)
 
 	sort.SliceStable(documents, func(i, j int) bool {
 		return documents[i].ID < documents[j].ID
@@ -57,8 +52,17 @@ func scan(url string) (documents []index.Document, err error) {
 	if err != nil {
 		return nil, err
 	}
-	for i, doc := range docs {
-		documents = append(documents, index.Document{ID: i, URL: doc.URL, Title: doc.Title})
+	for _, doc := range docs {
+		documents = append(documents, index.Document{URL: doc.URL, Title: doc.Title})
 	}
 	return documents, nil
+}
+
+func addID(docs []index.Document) []index.Document {
+	res := make([]index.Document, len(docs))
+	for i, doc := range docs {
+		doc.ID = i
+		res[i] = doc
+	}
+	return res
 }
