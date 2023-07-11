@@ -28,7 +28,7 @@ func main() {
 		documents = append(documents, docs...)
 	}
 
-	documents = addID(documents)
+	addID(documents)
 
 	sort.SliceStable(documents, func(i, j int) bool {
 		return documents[i].ID < documents[j].ID
@@ -58,11 +58,8 @@ func scan(url string) (documents []index.Document, err error) {
 	return documents, nil
 }
 
-func addID(docs []index.Document) []index.Document {
-	res := make([]index.Document, len(docs))
-	for i, doc := range docs {
-		doc.ID = i
-		res[i] = doc
+func addID(docs []index.Document) {
+	for i := range docs {
+		docs[i].ID = i
 	}
-	return res
 }
