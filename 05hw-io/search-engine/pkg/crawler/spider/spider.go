@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"go-core-4/05hw-io/search-engine/pkg/crawler"
-
 	"golang.org/x/net/html"
+
+	"go-core-4/05hw-io/search-engine/pkg/crawler"
 )
 
 // Service - служба поискового робота.

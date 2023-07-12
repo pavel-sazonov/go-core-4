@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"go-core-4/05hw-io/search-engine/pkg/crawler/spider"
-	"go-core-4/05hw-io/search-engine/pkg/index"
 	"io"
 	"log"
 	"os"
 	"sort"
+
+	"go-core-4/05hw-io/search-engine/pkg/crawler/spider"
+	"go-core-4/05hw-io/search-engine/pkg/index"
 )
 
 const (
