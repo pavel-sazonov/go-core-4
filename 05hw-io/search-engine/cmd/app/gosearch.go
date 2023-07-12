@@ -15,40 +15,43 @@ import (
 const (
 	godev       = "https://go.dev"
 	practicalgo = "https://www.practical-go-lessons.com"
+	docsFile    = "./docs.json"
 )
 
 var s = flag.String("s", "", "search argument")
 
 func main() {
 	flag.Parse()
-	urls := []string{godev, practicalgo}
 	var documents []index.Document
 
-	for _, url := range urls {
-		docs, err := scan(url)
+	f, err := os.Open(docsFile)
+	if err != nil {
+		log.Println(err)
+		documents = search([]string{godev, practicalgo})
+		addID(documents)
+		sort.SliceStable(documents, func(i, j int) bool {
+			return documents[i].ID < documents[j].ID
+		})
+
+		f, err = os.Create(docsFile)
 		if err != nil {
-			continue
+			log.Println(err)
+			return
 		}
-		documents = append(documents, docs...)
-	}
+		defer f.Close()
 
-	addID(documents)
-
-	sort.SliceStable(documents, func(i, j int) bool {
-		return documents[i].ID < documents[j].ID
-	})
-
-	f, err := os.Create("./docs.json")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer f.Close()
-
-	err = store(documents, f)
-	if err != nil {
-		log.Println(err)
-		return
+		err = store(documents, f)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	} else {
+		documents, err = get(f)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		log.Println(len(documents))
 	}
 
 	index := index.Make(documents)
@@ -61,6 +64,17 @@ func main() {
 			fmt.Println(documents[i])
 		}
 	}
+}
+
+func search(urls []string) (res []index.Document) {
+	for _, url := range urls {
+		docs, err := scan(url)
+		if err != nil {
+			continue
+		}
+		res = append(res, docs...)
+	}
+	return res
 }
 
 func scan(url string) (documents []index.Document, err error) {
@@ -95,3 +109,15 @@ func store(docs []index.Document, w io.Writer) error {
 	return nil
 }
 
+func get(r io.Reader) (docs []index.Document, err error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &docs)
+	if err != nil {
+		return nil, err
+	}
+	return docs, nil
+}
