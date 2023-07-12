@@ -1,10 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"go-core-4/05hw-io/search-engine/pkg/crawler/spider"
 	"go-core-4/05hw-io/search-engine/pkg/index"
+	"io"
+	"log"
+	"os"
 	"sort"
 )
 
@@ -33,6 +37,19 @@ func main() {
 	sort.SliceStable(documents, func(i, j int) bool {
 		return documents[i].ID < documents[j].ID
 	})
+
+	f, err := os.Create("./docs.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer f.Close()
+
+	err = store(documents, f)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	index := index.Make(documents)
 
@@ -63,3 +80,18 @@ func addID(docs []index.Document) {
 		docs[i].ID = i
 	}
 }
+
+func store(docs []index.Document, w io.Writer) error {
+	b, err := json.Marshal(docs)
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(b)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
