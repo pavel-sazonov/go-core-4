@@ -10,8 +10,7 @@ type Geom struct {
 	X1, Y1, X2, Y2 float64
 }
 
-// CalculateDistance рассчитывает расстояние между двумя точками
-// По условиям задачи, координаты не могут быть меньше 0.
+// CalculateDistance рассчитывает расстояние между двумя точками, координаты не могут быть меньше 0.
 func (geom Geom) CalculateDistance() (*float64, error) {
 	if geom.X1 < 0 || geom.X2 < 0 || geom.Y1 < 0 || geom.Y2 < 0 {
 		// добавил возврат ошибки
