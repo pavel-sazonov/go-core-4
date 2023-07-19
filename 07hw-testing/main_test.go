@@ -21,3 +21,39 @@ func TestSortInts(t *testing.T) {
 		}
 	}
 }
+
+func TestSortStrings(t *testing.T) {
+	tests := []struct {
+		name string
+		s    []string
+		want []string
+	}{
+		{
+			name: "test 1",
+			s:    []string{"ax", "9", "0", "", "ab", "x"},
+			want: []string{"", "0", "9", "ab", "ax", "x"},
+		},
+		{
+			name: "test 2",
+			s:    []string{"аз", "9", "0", "аб", "в", ""},
+			want: []string{"", "0", "9", "аб", "аз", "в"},
+		},
+		{
+			name: "test 3",
+			s:    []string{},
+			want: []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sort.Strings(tt.s)
+
+			for i, s := range tt.s {
+				if s != tt.want[i] {
+					t.Errorf("получили %s, ожидалось %s", s, tt.want[i])
+				}
+			}
+		})
+	}
+}
