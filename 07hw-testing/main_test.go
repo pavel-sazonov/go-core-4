@@ -101,3 +101,12 @@ func BenchmarkSortFLoat64s(b *testing.B) {
 		sort.Float64s(testData)
 	}
 }
+
+func BenchmarkSortFLoat64sShuffled(b *testing.B) {
+	data := sampleFloat64Data()
+
+	for i := 0; i < b.N; i++ {
+		sort.Float64s(data)
+		r.Shuffle(len(data), func(i, j int) { data[i], data[j] = data[j], data[i] })
+	}
+}
