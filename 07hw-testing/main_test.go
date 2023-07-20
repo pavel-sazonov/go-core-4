@@ -4,7 +4,10 @@ import (
 	"math/rand"
 	"sort"
 	"testing"
+	"time"
 )
+
+var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func TestSortInts(t *testing.T) {
 	s := []int{3, 5, 1, 0, -3}
@@ -63,7 +66,7 @@ func sampleIntData() []int {
 	data := make([]int, 1_000_000)
 
 	for i := 0; i < 1_000_000; i++ {
-		data[i] = rand.Intn(1000)
+		data[i] = r.Intn(1000)
 	}
 
 	return data
@@ -83,7 +86,7 @@ func sampleFloat64Data() []float64 {
 	data := make([]float64, 1_000_000)
 
 	for i := 0; i < 1_000_000; i++ {
-		data[i] = rand.Float64()
+		data[i] = r.Float64()
 	}
 
 	return data
