@@ -9,7 +9,7 @@ import (
 
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-func TestSortInts(t *testing.T) {
+func TestSort_Ints(t *testing.T) {
 	s := []int{3, 5, 1, 0, -3}
 	want := []int{-3, 0, 1, 3, 5}
 
@@ -26,7 +26,7 @@ func TestSortInts(t *testing.T) {
 	}
 }
 
-func TestSortStrings(t *testing.T) {
+func TestSort_Strings(t *testing.T) {
 	tests := []struct {
 		name string
 		s    []string
@@ -72,7 +72,7 @@ func sampleIntData() []int {
 	return data
 }
 
-func BenchmarkSortInts(b *testing.B) {
+func BenchmarkSort_Ints(b *testing.B) {
 	data := sampleIntData()
 
 	for i := 0; i < b.N; i++ {
@@ -92,7 +92,7 @@ func sampleFloat64Data() []float64 {
 	return data
 }
 
-func BenchmarkSortFLoat64s(b *testing.B) {
+func BenchmarkSort_FLoat64s(b *testing.B) {
 	data := sampleFloat64Data()
 
 	for i := 0; i < b.N; i++ {
@@ -102,7 +102,7 @@ func BenchmarkSortFLoat64s(b *testing.B) {
 	}
 }
 
-func BenchmarkSortFLoat64sShuffled(b *testing.B) {
+func BenchmarkSort_FLoat64sShuffled(b *testing.B) {
 	data := sampleFloat64Data()
 
 	for i := 0; i < b.N; i++ {
