@@ -71,3 +71,13 @@ func sampleIntData() []int {
 
 	return data
 }
+
+func BenchmarkSortInts(b *testing.B) {
+	data := sampleIntData()
+
+	for i := 0; i < b.N; i++ {
+		testData := make([]int, len(data))
+		copy(testData, data)
+		sort.Ints(testData)
+	}
+}
