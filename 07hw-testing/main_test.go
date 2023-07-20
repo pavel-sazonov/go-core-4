@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"sort"
 	"testing"
-	"time"
 )
 
 func TestSortInts(t *testing.T) {
@@ -77,5 +76,25 @@ func BenchmarkSortInts(b *testing.B) {
 		testData := make([]int, len(data))
 		copy(testData, data)
 		sort.Ints(testData)
+	}
+}
+
+func sampleFloat64Data() []float64 {
+	data := make([]float64, 1_000_000)
+
+	for i := 0; i < 1_000_000; i++ {
+		data[i] = rand.Float64()
+	}
+
+	return data
+}
+
+func BenchmarkSortFLoat64s(b *testing.B) {
+	data := sampleFloat64Data()
+
+	for i := 0; i < b.N; i++ {
+		testData := make([]float64, len(data))
+		copy(testData, data)
+		sort.Float64s(testData)
 	}
 }
