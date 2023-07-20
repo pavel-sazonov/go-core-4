@@ -1,8 +1,10 @@
 package main
 
 import (
+	"math/rand"
 	"sort"
 	"testing"
+	"time"
 )
 
 func TestSortInts(t *testing.T) {
@@ -56,4 +58,16 @@ func TestSortStrings(t *testing.T) {
 			}
 		})
 	}
+}
+
+func sampleIntData() []int {
+	s := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(s)
+	data := make([]int, 1_000_000)
+
+	for i := 0; i < 1_000_000; i++ {
+		data[i] = r.Intn(1000)
+	}
+
+	return data
 }
