@@ -92,6 +92,7 @@ func sampleFloat64Data() []float64 {
 	return data
 }
 
+// BenchmarkSort_FLoat64s сортирует новый скопированный слайс
 func BenchmarkSort_FLoat64s(b *testing.B) {
 	data := sampleFloat64Data()
 
@@ -102,6 +103,7 @@ func BenchmarkSort_FLoat64s(b *testing.B) {
 	}
 }
 
+// BenchmarkSort_FLoat64sShuffled перемешивает слайс после сортировки
 func BenchmarkSort_FLoat64sShuffled(b *testing.B) {
 	data := sampleFloat64Data()
 
