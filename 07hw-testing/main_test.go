@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"reflect"
 	"sort"
 	"testing"
 	"time"
@@ -19,10 +20,8 @@ func TestSort_Ints(t *testing.T) {
 		t.Fatalf("получилик оличество элементов: %d, ожидалось количество элементов: %d", len(s), len(want))
 	}
 
-	for i, n := range s {
-		if n != want[i] {
-			t.Fatalf("получили %d, ожидалось %d", n, want[i])
-		}
+	if !reflect.DeepEqual(s, want) {
+		t.Fatalf("получили %d, ожидалось %d", s, want)
 	}
 }
 
