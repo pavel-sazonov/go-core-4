@@ -1,4 +1,9 @@
-package homework
+package main
+
+import (
+	"io"
+	"os"
+)
 
 type ager interface {
 	Age() int
@@ -16,6 +21,16 @@ func (e *Employee) Age() int {
 
 func (e *Customer) Age() int {
 	return e.age
+}
+
+func main() {
+	var i any
+	a := []any{"задание3", 8, false, 0.4, Employee{19}}
+	a1 := []any{8, false, 0.4, Employee{19}, i}
+	a2 := make([]any, 0, 1)
+	writeStr(os.Stdout, a...)
+	writeStr(os.Stdout, a1...)
+	writeStr(os.Stdout, a2...)
 }
 
 // задание 1: возвращает старший возраст
@@ -51,4 +66,13 @@ func olderObj(a ...ager) ager {
 		}
 	}
 	return person
+}
+
+// задание 3: вывод в writer только строк
+func writeStr(w io.Writer, t ...any) {
+	for _, obj := range t {
+		if s, ok := obj.(string); ok {
+			w.Write([]byte(s))
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package homework
+package main
 
 import (
 	"reflect"
