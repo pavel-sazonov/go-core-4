@@ -47,11 +47,11 @@ func older(a ...ager) int {
 }
 
 // задание 2: возвращает объект с самым старшим возрастом
-func olderObj(a ...ager) ager {
+func olderObj(i ...any) any {
 	age := 0
-	var person ager
+	var person any
 
-	for _, p := range a {
+	for _, p := range i {
 		switch t := p.(type) {
 		case *Employee:
 			if t.age > age {

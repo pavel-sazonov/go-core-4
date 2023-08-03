@@ -31,7 +31,7 @@ func Test_older(t *testing.T) {
 
 func Test_olderObj(t *testing.T) {
 	type args struct {
-		a []ager
+		s []any
 	}
 	e2 := Employee{age: 48}
 	c1 := Customer{age: 20}
@@ -40,17 +40,17 @@ func Test_olderObj(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want ager
+		want any
 	}{
 		{
 			name: "1",
-			args: args{[]ager{&e1, &c1, &c2, &e2}},
+			args: args{[]any{&e1, &c1, &c2, &e2}},
 			want: &c2,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := olderObj(tt.args.a...); !reflect.DeepEqual(got, tt.want) {
+			if got := olderObj(tt.args.s...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("olderObj() = %v, want %v", got, tt.want)
 			}
 		})
