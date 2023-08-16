@@ -9,8 +9,8 @@ import (
 	"os"
 	"sort"
 
-	"go-core-4/05hw-io/search-engine/pkg/crawler/spider"
-	"go-core-4/05hw-io/search-engine/pkg/index"
+	"go-core-4/11-net/search-engine/pkg/crawler/spider"
+	"go-core-4/11-net/search-engine/pkg/index"
 )
 
 const (
