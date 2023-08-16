@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -19,10 +18,8 @@ const (
 	docsFile    = "./docs.json"
 )
 
-var s = flag.String("s", "", "search argument")
-
 func main() {
-	flag.Parse()
+	searchString := "Go"
 	var documents []index.Document
 
 	f, err := os.Open(docsFile)
@@ -57,7 +54,7 @@ func main() {
 
 	index := index.Make(documents)
 
-	for _, id := range index[*s] {
+	for _, id := range index[searchString] {
 		i := sort.Search(len(documents), func(i int) bool {
 			return documents[i].ID >= id
 		})
