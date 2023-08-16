@@ -25,8 +25,7 @@ func main() {
 	f, err := os.Open(docsFile)
 	if err != nil {
 		log.Println(err)
-		documents = search([]string{godev, practicalgo})
-		addID(documents)
+		documents = scan([]string{godev, practicalgo})
 		sort.SliceStable(documents, func(i, j int) bool {
 			return documents[i].ID < documents[j].ID
 		})
@@ -64,33 +63,25 @@ func main() {
 	}
 }
 
-func search(urls []string) (res []index.Document) {
+func scan(urls []string) (data []index.Document) {
+	s := spider.New()
+
 	for _, url := range urls {
-		docs, err := scan(url)
+		docs, err := s.Scan(url, 2)
+
 		if err != nil {
+			log.Println(err)
 			continue
 		}
-		res = append(res, docs...)
-	}
-	return res
-}
 
-func scan(url string) (documents []index.Document, err error) {
-	s := spider.New()
-	docs, err := s.Scan(url, 2)
-	if err != nil {
-		return nil, err
-	}
-	for _, doc := range docs {
-		documents = append(documents, index.Document{URL: doc.URL, Title: doc.Title})
-	}
-	return documents, nil
-}
+		len := len(data)
 
-func addID(docs []index.Document) {
-	for i := range docs {
-		docs[i].ID = i
+		for i, doc := range docs {
+			data = append(data, index.Document{ID: len + i, URL: doc.URL, Title: doc.Title})
+		}
 	}
+
+	return data
 }
 
 func store(docs []index.Document, w io.Writer) error {
