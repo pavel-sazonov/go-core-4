@@ -86,16 +86,11 @@ func scan(urls []string) (data []index.Document) {
 
 func store(docs []index.Document, w io.Writer) error {
 	b, err := json.Marshal(docs)
-	if err != nil {
-		return err
+	if err == nil {
+		_, err = w.Write(b)
 	}
 
-	_, err = w.Write(b)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func get(r io.Reader) (docs []index.Document, err error) {
