@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -10,6 +9,7 @@ import (
 
 	"go-core-4/11-net/search-engine/pkg/crawler/spider"
 	"go-core-4/11-net/search-engine/pkg/index"
+	"go-core-4/11-net/search-engine/pkg/netsrv"
 )
 
 const (
@@ -19,12 +19,19 @@ const (
 )
 
 func main() {
-	searchString := "Go"
-	var documents []index.Document
+	documents := readOrScan()
+	index := index.Make(documents)
+
+	netsrv.Start(documents, index)
+}
+
+// чтение отсканированных документов из сохраненного файла
+// при отсутствии файла, сканирование и сохранение результатов в новый файл
+func readOrScan() (data []index.Document) {
 	readOK := false
 
 	if _, err := os.Stat(docsFile); err == nil {
-		documents, err = readFromFile()
+		data, err = readFromFile()
 		if err == nil {
 			readOK = true
 		} else {
@@ -33,32 +40,29 @@ func main() {
 	}
 
 	if !readOK {
-		documents = scan([]string{godev, practicalgo})
-		sort.SliceStable(documents, func(i, j int) bool {
-			return documents[i].ID < documents[j].ID
+		data = scan([]string{godev, practicalgo})
+		sort.SliceStable(data, func(i, j int) bool {
+			return data[i].ID < data[j].ID
 		})
-		saveToFile(documents)
+		saveToFile(data)
 	}
 
-	index := index.Make(documents)
-
-	for _, id := range index[searchString] {
-		i := sort.Search(len(documents), func(i int) bool {
-			return documents[i].ID >= id
-		})
-		if i < len(documents) && documents[i].ID == id {
-			fmt.Println(documents[i])
-		}
-	}
+	return data
 }
 
+// получение результатов сканирования веб страниц из файла
 func readFromFile() (documents []index.Document, err error) {
 	f, err := os.Open(docsFile)
 	if err != nil {
 		return nil, err
 	}
 
-	documents, err = get(f)
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(data, &documents)
 	if err != nil {
 		return nil, err
 	}
@@ -66,6 +70,7 @@ func readFromFile() (documents []index.Document, err error) {
 	return documents, nil
 }
 
+// сканирование веб страниц по ссылкам
 func scan(urls []string) (data []index.Document) {
 	s := spider.New()
 
@@ -87,6 +92,7 @@ func scan(urls []string) (data []index.Document) {
 	return data
 }
 
+// сохранение результата сканирования веб страниц в файл
 func saveToFile(docs []index.Document) {
 	f, err := os.Create(docsFile)
 	if err != nil {
@@ -106,17 +112,4 @@ func saveToFile(docs []index.Document) {
 		log.Println(err)
 		return
 	}
-}
-
-func get(r io.Reader) (docs []index.Document, err error) {
-	data, err := io.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(data, &docs)
-	if err != nil {
-		return nil, err
-	}
-	return docs, nil
 }
