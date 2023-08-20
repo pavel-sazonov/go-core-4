@@ -20,9 +20,9 @@ const (
 
 func main() {
 	documents := readOrScan()
-	index := index.Make(documents)
+	index.Make(documents)
 
-	netsrv.Start(documents, index)
+	netsrv.Start(documents)
 }
 
 // чтение отсканированных документов из сохраненного файла

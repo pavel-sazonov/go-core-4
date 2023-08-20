@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"sort"
 
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func Start(documents []index.Document, index index.Index) {
+func Start(documents []index.Document) {
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
 		log.Fatal(err)
@@ -26,13 +25,13 @@ func Start(documents []index.Document, index index.Index) {
 			log.Fatal(err)
 		}
 		fmt.Println("клиент подключился")
-		go handler(conn, documents, index)
+		go handler(conn, documents)
 	}
 
 }
 
 // обработчик подключения
-func handler(conn net.Conn, documents []index.Document, index index.Index) {
+func handler(conn net.Conn, documents []index.Document) {
 	defer conn.Close()
 	defer fmt.Println("Connection Closed")
 
@@ -43,7 +42,7 @@ func handler(conn net.Conn, documents []index.Document, index index.Index) {
 			return
 		}
 
-		res := searchString(string(msg), documents, index)
+		res := index.Search(string(msg), documents)
 
 		if len(res) == 0 {
 			_, err = conn.Write([]byte("ничего не найдено\n"))
@@ -69,17 +68,4 @@ func handler(conn net.Conn, documents []index.Document, index index.Index) {
 			return
 		}
 	}
-}
-
-// поиск строки из запроса в отсканированных документах
-func searchString(s string, documents []index.Document, index index.Index) (result []string) {
-	for _, id := range index[s] {
-		i := sort.Search(len(documents), func(i int) bool {
-			return documents[i].ID >= id
-		})
-		if i < len(documents) && documents[i].ID == id {
-			result = append(result, documents[i].Title)
-		}
-	}
-	return result
 }

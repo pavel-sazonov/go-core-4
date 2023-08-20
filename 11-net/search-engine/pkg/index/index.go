@@ -1,6 +1,7 @@
 package index
 
 import (
+	"sort"
 	"strings"
 )
 
@@ -14,14 +15,27 @@ type Document struct {
 	Title string
 }
 
-func Make(documents []Document) Index {
-	var index = make(map[string][]int)
+var index = make(map[string][]int)
 
+// создание индекса
+func Make(documents []Document) {
 	for _, doc := range documents {
 		words := strings.Split(doc.Title, " ")
 		for _, word := range words {
 			index[word] = append(index[word], doc.ID)
 		}
 	}
-	return index
+}
+
+// поиск строки в отсканированных документах
+func Search(s string, documents []Document) (result []string) {
+	for _, id := range index[s] {
+		i := sort.Search(len(documents), func(i int) bool {
+			return documents[i].ID >= id
+		})
+		if i < len(documents) && documents[i].ID == id {
+			result = append(result, documents[i].Title)
+		}
+	}
+	return result
 }
