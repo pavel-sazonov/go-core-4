@@ -9,7 +9,7 @@ import (
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func Start(documents []index.Document) {
+func Start() {
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
 		log.Fatal(err)
@@ -25,13 +25,13 @@ func Start(documents []index.Document) {
 			log.Fatal(err)
 		}
 		fmt.Println("клиент подключился")
-		go handler(conn, documents)
+		go handler(conn)
 	}
 
 }
 
 // обработчик подключения
-func handler(conn net.Conn, documents []index.Document) {
+func handler(conn net.Conn) {
 	defer conn.Close()
 	defer fmt.Println("Connection Closed")
 
@@ -42,7 +42,7 @@ func handler(conn net.Conn, documents []index.Document) {
 			return
 		}
 
-		res := index.Search(string(msg), documents)
+		res := index.Search(string(msg))
 
 		if len(res) == 0 {
 			_, err = conn.Write([]byte("ничего не найдено\n"))
