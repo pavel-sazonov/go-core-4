@@ -55,7 +55,7 @@ func Search(s string) (result []string) {
 
 // чтение отсканированных документов из сохраненного файла
 // при отсутствии файла, сканирование и сохранение результатов в новый файл
-func GetDocuments() {
+func ReadOrScanDocuments() {
 	readOK := false
 
 	if _, err := os.Stat(docsFile); err == nil {

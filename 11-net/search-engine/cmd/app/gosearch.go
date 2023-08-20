@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	index.GetDocuments()
+	index.ReadOrScanDocuments()
 	index.Make()
 
 	netsrv.Start()
