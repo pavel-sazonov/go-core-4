@@ -25,6 +25,7 @@ func Start(documents []index.Document, index index.Index) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println("клиент подключился")
 		go handler(conn, documents, index)
 	}
 
@@ -43,24 +44,30 @@ func handler(conn net.Conn, documents []index.Document, index index.Index) {
 		}
 
 		res := searchString(string(msg), documents, index)
+
 		if len(res) == 0 {
-			data := []byte("ничего не найдено")
-			data = append(data, '\n')
-			_, err = conn.Write(data)
+			_, err = conn.Write([]byte("ничего не найдено\n"))
 			if err != nil {
-				return
-			}
-			continue
-		}
-		for _, s := range res {
-			data := []byte(s)
-			data = append(data, '\n')
-			_, err = conn.Write(data)
-			if err != nil {
+				log.Println(err)
 				return
 			}
 		}
 
+		for _, s := range res {
+			data := []byte(s)
+			data = append(data, '\n')
+			_, err := conn.Write(data)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
+
+		_, err = conn.Write([]byte("end\n"))
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
