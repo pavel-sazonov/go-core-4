@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"go-core-4/11-net/search-engine/pkg/index"
 )
@@ -34,6 +35,8 @@ func Start() {
 func handler(conn net.Conn) {
 	defer conn.Close()
 	defer fmt.Println("Connection Closed")
+
+	conn.SetDeadline(time.Now().Add(time.Second * 30))
 
 	r := bufio.NewReader(conn)
 	for {
@@ -67,5 +70,7 @@ func handler(conn net.Conn) {
 			log.Println(err)
 			return
 		}
+
+		conn.SetDeadline(time.Now().Add(time.Second * 30))
 	}
 }
