@@ -18,7 +18,7 @@ const (
 )
 
 // инвертированный интдекс: ключ - слово из Title, значение - слайс ID
-type Index map[string][]int
+type index map[string][]int
 
 // Document - документ, веб-страница, полученная поисковым роботом.
 type Document struct {
@@ -27,27 +27,27 @@ type Document struct {
 	Title string
 }
 
-var documents []Document
-var index = make(map[string][]int)
+var Documents []Document
+var Index = make(map[string][]int)
 
 // создание индекса
 func Make() {
-	for _, doc := range documents {
+	for _, doc := range Documents {
 		words := strings.Split(doc.Title, " ")
 		for _, word := range words {
-			index[word] = append(index[word], doc.ID)
+			Index[word] = append(Index[word], doc.ID)
 		}
 	}
 }
 
 // поиск строки в отсканированных документах
 func Search(s string) (result []string) {
-	for _, id := range index[s] {
-		i := sort.Search(len(documents), func(i int) bool {
-			return documents[i].ID >= id
+	for _, id := range Index[s] {
+		i := sort.Search(len(Documents), func(i int) bool {
+			return Documents[i].ID >= id
 		})
-		if i < len(documents) && documents[i].ID == id {
-			result = append(result, documents[i].Title)
+		if i < len(Documents) && Documents[i].ID == id {
+			result = append(result, Documents[i].Title)
 		}
 	}
 	return result
@@ -59,7 +59,7 @@ func ReadOrScanDocuments() {
 	readOK := false
 
 	if _, err := os.Stat(docsFile); err == nil {
-		documents, err = readFromFile()
+		Documents, err = readFromFile()
 		if err == nil {
 			readOK = true
 		} else {
@@ -68,11 +68,11 @@ func ReadOrScanDocuments() {
 	}
 
 	if !readOK {
-		documents = scan([]string{godev, practicalgo})
-		sort.SliceStable(documents, func(i, j int) bool {
-			return documents[i].ID < documents[j].ID
+		Documents = scan([]string{godev, practicalgo})
+		sort.SliceStable(Documents, func(i, j int) bool {
+			return Documents[i].ID < Documents[j].ID
 		})
-		saveToFile(documents)
+		saveToFile(Documents)
 	}
 }
 
