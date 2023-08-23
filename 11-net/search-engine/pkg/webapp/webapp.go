@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -12,7 +13,9 @@ import (
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func StartServer() {
+func StartServer(wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	const addr = ":8080"
 	mux := mux.NewRouter()
 
@@ -46,7 +49,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 	}
-	// fmt.Fprintf(w, "<html><body><h2>Hi, %v</h2></body></html>", vars["name"])
 }
 
 func data(name string) (data []byte, err error) {
@@ -63,12 +65,3 @@ func data(name string) (data []byte, err error) {
 
 	return data, nil
 }
-
-// func docsData() (indexData []byte, err error) {
-// 	indexData, err = json.Marshal(index.Index)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return indexData, nil
-// }

@@ -17,9 +17,6 @@ const (
 	practicalgo = "https://www.practical-go-lessons.com"
 )
 
-// инвертированный интдекс: ключ - слово из Title, значение - слайс ID
-type index map[string][]int
-
 // Document - документ, веб-страница, полученная поисковым роботом.
 type Document struct {
 	ID    int
@@ -27,18 +24,10 @@ type Document struct {
 	Title string
 }
 
-var Documents []Document
+// инвертированный интдекс: ключ - слово из Title, значение - слайс ID
 var Index = make(map[string][]int)
 
-// создание индекса
-func Make() {
-	for _, doc := range Documents {
-		words := strings.Split(doc.Title, " ")
-		for _, word := range words {
-			Index[word] = append(Index[word], doc.ID)
-		}
-	}
-}
+var Documents []Document
 
 // поиск строки в отсканированных документах
 func Search(s string) (result []string) {
@@ -55,16 +44,15 @@ func Search(s string) (result []string) {
 
 // чтение отсканированных документов из сохраненного файла
 // при отсутствии файла, сканирование и сохранение результатов в новый файл
-func ReadOrScanDocuments() {
+func GetDocuments() {
 	readOK := false
 
 	if _, err := os.Stat(docsFile); err == nil {
 		Documents, err = readFromFile()
-		if err == nil {
-			readOK = true
-		} else {
+		if err != nil {
 			log.Println(err)
 		}
+		readOK = true
 	}
 
 	if !readOK {
@@ -74,6 +62,8 @@ func ReadOrScanDocuments() {
 		})
 		saveToFile(Documents)
 	}
+
+	makeIndex()
 }
 
 // получение результатов сканирования веб страниц из файла
@@ -137,5 +127,15 @@ func saveToFile(docs []Document) {
 	if err != nil {
 		log.Println(err)
 		return
+	}
+}
+
+// создание индекса
+func makeIndex() {
+	for _, doc := range Documents {
+		words := strings.Split(doc.Title, " ")
+		for _, word := range words {
+			Index[word] = append(Index[word], doc.ID)
+		}
 	}
 }

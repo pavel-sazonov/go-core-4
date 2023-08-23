@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func Start() {
+func Start(wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
 		log.Fatal(err)
