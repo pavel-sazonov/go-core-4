@@ -19,8 +19,7 @@ func StartServer(wg *sync.WaitGroup) {
 	const addr = ":8080"
 	mux := mux.NewRouter()
 
-	// Регистрация обработчика для URL `/` в маршрутизаторе по умолчанию.
-	mux.HandleFunc("/{name}", mainHandler).Methods(http.MethodGet)
+	endpoints(mux)
 
 	srv := &http.Server{
 		ReadTimeout:  10 * time.Second,
@@ -36,6 +35,11 @@ func StartServer(wg *sync.WaitGroup) {
 	}
 
 	log.Fatal(srv.Serve(listener))
+}
+
+func endpoints(r *mux.Router) {
+	// Регистрация обработчика для URL `/` в маршрутизаторе по умолчанию.
+	r.HandleFunc("/{name}", mainHandler).Methods(http.MethodGet)
 }
 
 // HTTP-обработчик
@@ -54,7 +58,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 func data(name string) (data []byte, err error) {
 	switch name {
 	case "index":
-		data, err = json.Marshal(index.Index)
+		data, err = json.Marshal(index.GetIndex())
 	case "docs":
 		data, err = json.Marshal(index.Documents)
 	}
