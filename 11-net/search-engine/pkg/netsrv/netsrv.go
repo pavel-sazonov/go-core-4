@@ -9,10 +9,10 @@ import (
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func Start() {
+func Start() error {
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
-		return
+		return err
 	}
 	defer listener.Close()
 
@@ -22,7 +22,7 @@ func Start() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			return
+			return err
 		}
 		fmt.Println("клиент подключился")
 		go handler(conn)

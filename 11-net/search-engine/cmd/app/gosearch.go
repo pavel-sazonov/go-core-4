@@ -22,7 +22,11 @@ func main() {
 
 	wg.Add(1)
 	go webapp.StartServer(&wg)
-	netsrv.Start()
+
+	err := netsrv.Start()
+	if err != nil {
+		log.Println(err)
+	}
 
 	wg.Wait()
 }
