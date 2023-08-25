@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"sync"
 
 	"go-core-4/11-net/search-engine/pkg/index"
@@ -8,15 +9,36 @@ import (
 	"go-core-4/11-net/search-engine/pkg/webapp"
 )
 
-func main() {
-	var wg sync.WaitGroup
-	index.GetDocuments()
+const (
+	godev       = "https://go.dev"
+	practicalgo = "https://www.practical-go-lessons.com"
+)
 
-	wg.Add(1)
-	go netsrv.Start(&wg)
+func main() {
+	getData()
+	index.MakeIndex()
+
+	var wg sync.WaitGroup
 
 	wg.Add(1)
 	go webapp.StartServer(&wg)
+	netsrv.Start()
 
 	wg.Wait()
+}
+
+func getData() {
+	if index.IsFileExist() {
+		err := index.ReadFromFile()
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	index.Scan([]string{godev, practicalgo})
+	err := index.SaveToFile()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

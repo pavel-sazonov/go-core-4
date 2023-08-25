@@ -31,7 +31,7 @@ func StartServer(wg *sync.WaitGroup) {
 	// Старт сетевой службы веб-сервера.
 	listener, err := net.Listen("tcp4", addr)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	log.Fatal(srv.Serve(listener))

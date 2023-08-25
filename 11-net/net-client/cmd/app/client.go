@@ -13,6 +13,7 @@ func main() {
 	conn, err := net.Dial("tcp", "0.0.0.0:8000")
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	defer conn.Close()
 	defer fmt.Println("Соединение с сервером закрыто")
@@ -39,7 +40,6 @@ func main() {
 
 		r := bufio.NewReader(conn)
 
-	OUT:
 		for {
 			msg, _, err := r.ReadLine()
 			if err != nil {
@@ -48,7 +48,7 @@ func main() {
 			}
 			text := string(msg)
 			if text == "end" {
-				break OUT
+				break
 			}
 			fmt.Println(text)
 		}

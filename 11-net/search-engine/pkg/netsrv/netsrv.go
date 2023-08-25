@@ -3,20 +3,16 @@ package netsrv
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"net"
-	"sync"
 	"time"
 
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func Start(wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func Start() {
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 	defer listener.Close()
 
@@ -26,12 +22,11 @@ func Start(wg *sync.WaitGroup) {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Fatal(err)
+			return
 		}
 		fmt.Println("клиент подключился")
 		go handler(conn)
 	}
-
 }
 
 // обработчик подключения
@@ -53,7 +48,6 @@ func handler(conn net.Conn) {
 		if len(res) == 0 {
 			_, err = conn.Write([]byte("ничего не найдено\n"))
 			if err != nil {
-				log.Println(err)
 				return
 			}
 		}
@@ -63,14 +57,12 @@ func handler(conn net.Conn) {
 			data = append(data, '\n')
 			_, err := conn.Write(data)
 			if err != nil {
-				log.Println(err)
 				return
 			}
 		}
 
 		_, err = conn.Write([]byte("end\n"))
 		if err != nil {
-			log.Println(err)
 			return
 		}
 
