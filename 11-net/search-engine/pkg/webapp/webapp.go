@@ -2,10 +2,8 @@ package webapp
 
 import (
 	"encoding/json"
-	"log"
 	"net"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -13,9 +11,7 @@ import (
 	"go-core-4/11-net/search-engine/pkg/index"
 )
 
-func StartServer(wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func StartServer() error {
 	const addr = ":8080"
 	mux := mux.NewRouter()
 
@@ -31,10 +27,10 @@ func StartServer(wg *sync.WaitGroup) {
 	// Старт сетевой службы веб-сервера.
 	listener, err := net.Listen("tcp4", addr)
 	if err != nil {
-		return
+		return err
 	}
 
-	log.Fatal(srv.Serve(listener))
+	return srv.Serve(listener)
 }
 
 func endpoints(r *mux.Router) {

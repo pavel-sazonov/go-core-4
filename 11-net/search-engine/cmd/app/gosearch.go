@@ -20,8 +20,13 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	wg.Add(1)
-	go webapp.StartServer(&wg)
+	go func() {
+		defer wg.Done()
+		err := webapp.StartServer()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	err := netsrv.Start()
 	if err != nil {
