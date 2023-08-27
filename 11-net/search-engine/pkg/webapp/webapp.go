@@ -1,0 +1,67 @@
+package webapp
+
+import (
+	"encoding/json"
+	"net"
+	"net/http"
+	"time"
+
+	"github.com/gorilla/mux"
+
+	"go-core-4/11-net/search-engine/pkg/index"
+)
+
+func StartServer() error {
+	const addr = ":8080"
+	mux := mux.NewRouter()
+
+	endpoints(mux)
+
+	srv := &http.Server{
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 20 * time.Second,
+		Handler:      mux,
+		Addr:         addr,
+	}
+
+	// Старт сетевой службы веб-сервера.
+	listener, err := net.Listen("tcp4", addr)
+	if err != nil {
+		return err
+	}
+
+	return srv.Serve(listener)
+}
+
+func endpoints(r *mux.Router) {
+	// Регистрация обработчика для URL `/` в маршрутизаторе по умолчанию.
+	r.HandleFunc("/{name}", mainHandler).Methods(http.MethodGet)
+}
+
+// HTTP-обработчик
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if v, ok := vars["name"]; ok {
+		data, err := data(v)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+	}
+}
+
+func data(name string) (data []byte, err error) {
+	switch name {
+	case "index":
+		data, err = json.Marshal(index.GetIndex())
+	case "docs":
+		data, err = json.Marshal(index.Documents)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
