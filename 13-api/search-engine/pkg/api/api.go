@@ -28,4 +28,6 @@ func (api *API) Router() *mux.Router {
 
 // endpoints регистрирует конечные точки API.
 func (api *API) endpoints() {
+	api.router.Use(headersMiddleware)
+	api.router.HandleFunc("/api/v1/docs/", api.docs).Methods(http.MethodGet)
 }
