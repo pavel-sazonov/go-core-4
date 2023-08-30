@@ -11,7 +11,7 @@ import (
 	"go-core-4/13-api/search-engine/pkg/index"
 )
 
-func (api *API) doc(w http.ResponseWriter, r *http.Request) {
+func (api *API) searchDoc(w http.ResponseWriter, r *http.Request) {
 	search := mux.Vars(r)["search"]
 	doc := index.Search(search)
 
@@ -43,11 +43,6 @@ func (api *API) deleteDoc(w http.ResponseWriter, r *http.Request) {
 
 	i := index.IndexByID(id)
 	if len(index.Documents) > i && index.Documents[i].ID == id {
-		err = json.NewEncoder(w).Encode(index.Documents[i])
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 		index.Documents = slices.Delete(index.Documents, i, i+1)
 	} else {
 		http.Error(w, "Not Found", http.StatusNotFound)
