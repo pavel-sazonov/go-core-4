@@ -30,7 +30,8 @@ func (api *API) Router() *mux.Router {
 func (api *API) endpoints() {
 	api.router.Use(headersMiddleware)
 	api.router.HandleFunc("/api/v1/docs/{search}", api.doc).Methods(http.MethodGet)
-	api.router.HandleFunc("/api/v1/docs/", api.docs).Methods(http.MethodGet)
+	api.router.HandleFunc("/api/v1/docs", api.docs).Methods(http.MethodGet)
 	api.router.HandleFunc("/api/v1/docs/{id}", api.deleteDoc).Methods(http.MethodDelete)
-	api.router.HandleFunc("/api/v1/docs/", api.newDoc).Methods(http.MethodPost)
+	api.router.HandleFunc("/api/v1/docs/{id}", api.updateDoc).Methods(http.MethodPut)
+	api.router.HandleFunc("/api/v1/docs", api.newDoc).Methods(http.MethodPost)
 }

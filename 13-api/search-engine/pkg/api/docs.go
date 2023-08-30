@@ -65,3 +65,26 @@ func (api *API) newDoc(w http.ResponseWriter, r *http.Request) {
 	index.Documents = append(index.Documents, doc)
 	index.MakeIndex()
 }
+
+func (api *API) updateDoc(w http.ResponseWriter, r *http.Request) {
+	var doc index.Document
+	err := json.NewDecoder(r.Body).Decode(&doc)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	i := index.IndexByID(id)
+	if len(index.Documents) > i && index.Documents[i].ID == id {
+		index.Documents[i].URL = doc.URL
+		index.Documents[i].Title = doc.Title
+	} else {
+		http.Error(w, "Not Found", http.StatusNotFound)
+	}
+}
