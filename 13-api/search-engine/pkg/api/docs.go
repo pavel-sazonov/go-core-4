@@ -53,3 +53,15 @@ func (api *API) deleteDoc(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Found", http.StatusNotFound)
 	}
 }
+
+func (api *API) newDoc(w http.ResponseWriter, r *http.Request) {
+	var doc index.Document
+	err := json.NewDecoder(r.Body).Decode(&doc)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	doc.ID = len(index.Documents) + 1
+	index.Documents = append(index.Documents, doc)
+	index.MakeIndex()
+}
