@@ -31,6 +31,13 @@ func GetIndex() Index {
 	return index
 }
 
+// поиск индекса документа по id
+func IndexByID(id int) int {
+	return sort.Search(len(Documents), func(i int) bool {
+		return Documents[i].ID >= id
+	})
+}
+
 // поиск строки в отсканированных документах
 func Search(s string) (result []string) {
 	for _, id := range index[s] {
@@ -73,6 +80,7 @@ func ReadFromFile() error {
 func Scan(urls []string) {
 	s := spider.New()
 	data := make([]Document, 0)
+	id := 1
 
 	for _, url := range urls {
 		docs, err := s.Scan(url, 2)
@@ -81,10 +89,9 @@ func Scan(urls []string) {
 			continue
 		}
 
-		len := 0
-
-		for i, doc := range docs {
-			data = append(data, Document{ID: len + i, URL: doc.URL, Title: doc.Title})
+		for _, doc := range docs {
+			data = append(data, Document{ID: id, URL: doc.URL, Title: doc.Title})
+			id += 1
 		}
 	}
 
