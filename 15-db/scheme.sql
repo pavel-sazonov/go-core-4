@@ -56,6 +56,8 @@ CREATE TABLE movies (
     studio_id INTEGER REFERENCES studios(id)
 );
 
+CREATE INDEX IF NOT EXISTS movies_title_idx ON movies USING btree (lower(title));
+
 -- связь между фильмами и актерами
 CREATE TABLE movies_actors (
     id BIGSERIAL PRIMARY KEY, -- первичный ключ
