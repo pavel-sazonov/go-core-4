@@ -52,7 +52,6 @@ CREATE TABLE movies (
     year_of_release INTEGER CHECK (year_of_release >= 1800) NOT NULL DEFAULT 0,
     box_office INTEGER NOT NULL DEFAULT 0,
     rating TEXT NOT NULL DEFAULT '', 
-    movie_id INTEGER NOT NULL REFERENCES movies(id),
     studio_id INTEGER REFERENCES studios(id)
 );
 
