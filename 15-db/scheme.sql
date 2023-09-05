@@ -78,8 +78,8 @@ CREATE TABLE movies_directors (
 CREATE OR REPLACE FUNCTION check_moview_year_and_title()
   RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.year_of_release == year_of_release AND
-        NEW.title == (SELECT title FROM movies WHERE year_of_release = NEW.year_of_release)
+    IF NEW.year_of_release = (SELECT year_of_release FROM movies WHERE year_of_release = NEW.year_of_release) AND
+        NEW.title = (SELECT title FROM movies WHERE year_of_release = NEW.year_of_release)
         THEN RAISE EXCEPTION 'Invalid movie title'; --RETURN NULL;
         ELSE RETURN NEW;
     END IF;
